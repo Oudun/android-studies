@@ -1,4 +1,4 @@
-package org.studies.oudun.android_studies;
+package org.studies.android;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("org.studies.oudun.android_studies", appContext.getPackageName());
+        assertEquals("org.studies.android", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package org.studies.oudun.android_studies;
+package org.studies.android;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

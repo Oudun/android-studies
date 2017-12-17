@@ -1,4 +1,4 @@
-package org.studies.oudun.android_studies;
+package org.studies.android;
 
 import org.junit.Test;
 
