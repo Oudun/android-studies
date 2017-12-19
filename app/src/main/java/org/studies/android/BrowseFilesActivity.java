@@ -1,6 +1,7 @@
 package org.studies.android;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -28,15 +29,15 @@ public class BrowseFilesActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_browse_files);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton home = (FloatingActionButton) findViewById(R.id.home);
+        home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(BrowseFilesActivity.this, MainActivity.class);
+                startActivity(i);
             }
         });
 
@@ -127,7 +128,7 @@ public class BrowseFilesActivity extends ListActivity {
             File selectedFile = currentFiles.get(position);
             textView.setText(selectedFile.getAbsolutePath());
             if (!selectedFile.canRead()) {
-                textView.setTextColor(Color.MAGENTA);
+                textView.setTextColor(Constants.LIGHT_PINK);
             } else {
                 textView.setTextColor(Color.BLACK);
             }
