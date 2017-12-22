@@ -3,4 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_browse_files">BrowseFilesActivity</string>
     <string name="title_activity_layout">LayoutActivity</string>
+    <string name="title_activity_horizontal_layout">HorizontalLayoutActivity</string>
+    <string name="title_activity_relative_layout">RelativeLayoutActivity</string>
+    <string name="title_activity_grid_layout">GridLayoutActivity</string>
 </resources>

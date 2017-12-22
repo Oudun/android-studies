@@ -26,10 +26,7 @@ public class MainActivity extends ListActivity {
         activitiesListAdapter.addLink("Layout Samples", LayoutActivity.class);
         setListAdapter(activitiesListAdapter);
 
-
-        ListView listView = (ListView) findViewById(android.R.id.list);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Log.d(this.getClass().getName(), i + " clicked");

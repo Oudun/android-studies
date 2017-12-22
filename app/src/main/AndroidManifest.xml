@@ -28,6 +28,18 @@
         <activity
             android:name=".activities.LayoutActivity"
             android:label="@string/title_activity_layout"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.LinearLayoutActivity"
+            android:label="@string/title_activity_horizontal_layout"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.RelativeLayoutActivity"
+            android:label="@string/title_activity_relative_layout"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".GridLayoutActivity"
+            android:label="@string/title_activity_grid_layout"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
