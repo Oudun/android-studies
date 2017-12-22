@@ -1,4 +1,4 @@
-package org.studies.android;
+package org.studies.android.activities;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +17,15 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.studies.android.Constants;
+import org.studies.android.R;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BrowseFilesActivity extends ListActivity {
@@ -73,10 +77,16 @@ public class BrowseFilesActivity extends ListActivity {
                 rootDir = new File(new URI("file:/"));
                 currentDirectory = rootDir;
                 currentFiles = new ArrayList<File>();
-                //currentFiles = new SortedList<File>(File.class, new SortCallback());
-                for (File file : currentDirectory.listFiles()) {
-                    currentFiles.add(file);
-                }
+                currentFiles.addAll(Arrays.asList(currentDirectory.listFiles()));
+                Collections.sort(currentFiles, new Comparator<File>() {
+                    public int compare(File fileOne, File fileTwo) {
+                        if (fileOne.isDirectory() && fileTwo.isFile()) {
+                            return -1;
+                        } else if (fileOne.isFile() && fileTwo.isDirectory()) {
+                            return 1;
+                        } else return fileOne.getName().compareTo(fileTwo.getName());
+                    }
+                });
             } catch (Exception e) {
                 Log.e(this.getClass().getName(), e.getMessage());
                 e.printStackTrace();
@@ -119,7 +129,6 @@ public class BrowseFilesActivity extends ListActivity {
         }
 
         @Override
-
         public View getView(int position, View convertView, ViewGroup container) {
             if (convertView == null) {
                 convertView = getLayoutInflater().inflate(R.layout.items_list, container, false);

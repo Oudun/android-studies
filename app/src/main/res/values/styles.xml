@@ -17,4 +17,24 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Base application theme. -->
+    <!--<style name="ListStyle" parent="Theme.AppCompat">-->
+    <!--<item type="attr" name="minHeight">48dip</item>-->
+    <!--<item type="attr" name="minWidth">64dip</item>-->
+    <!--</style>-->
+
+    <style name="BeatBoxButton">
+        <item name="android:layout_height">20pt</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/dark_blue</item>
+        <item name="android:foreground">@color/dark_blue</item>
+        <item name="android:textSize">18px</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:colorPressedHighlight">@color/dark_blue</item>
+        <item name="android:layout_margin">50pt</item>
+        <item name="android:padding">60pt</item>
+        <item name="android:layout_marginLeft">50pt</item>
+    </style>
+
 </resources>
+
