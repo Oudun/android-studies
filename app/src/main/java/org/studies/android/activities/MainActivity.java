@@ -26,7 +26,10 @@ public class MainActivity extends ListActivity {
         activitiesListAdapter.addLink("Layout Samples", LayoutActivity.class);
         setListAdapter(activitiesListAdapter);
 
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+        ListView listView = (ListView) findViewById(android.R.id.list);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Log.d(this.getClass().getName(), i + " clicked");
@@ -53,9 +56,9 @@ public class MainActivity extends ListActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

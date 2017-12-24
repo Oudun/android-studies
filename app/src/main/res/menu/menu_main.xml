@@ -2,9 +2,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="org.studies.android.activities.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+    <item android:id="@+id/hor_layout" android:title="Horizontal Layout" />
+    <item android:id="@+id/ver_layout" android:title="Vertical Layout" />
+    <item android:id="@+id/bottom_gravity" android:title="Bottom Gravity" />
+    <item android:id="@+id/center_gravity" android:title="Center Gravity" />
+    <item android:id="@+id/clip_horizontal_gravity" android:title="Clip Horizontal Gravity" />
+    <item android:id="@+id/clip_vertical_gravity" android:title="Clip Vertical Gravity" />
+    <item android:id="@+id/displpay_clip_horizontal_gravity" android:title="Display Clip Horizontal Gravity" />
+    <item android:id="@+id/display_clip_vertical_gravity" android:title="Display Clip Vertical Gravity" />
+    <item android:id="@+id/end_gravity" android:title="End Gravity" />
+    <item android:id="@+id/fill_gravity" android:title="Fill Gravity" />
+    <item android:id="@+id/fill_horizontal_gravity" android:title="Fill Horizontal Gravity" />
+    <item android:id="@+id/fill_vertical_gravity" android:title="Fill Vertical Gravity" />
+    <item android:id="@+id/horizontal_gravity_mask_gravity" android:title="Horizontal Gravity Mask Gravity" />
+    <item android:id="@+id/left_gravity" android:title="Left Gravity" />
+    <item android:id="@+id/no_gravity_gravity" android:title="No Gravity Gravity" />
+    <item android:id="@+id/relative_horizontal_gravity_mask_gravity" android:title="Relative Horizontal Gravity Mask Gravity" />
+    <item android:id="@+id/right_gravity" android:title="Right Gravity" />
+    <item android:id="@+id/top_gravity" android:title="Top Gravity" />
+
+
+
+    //            RELATIVE_LAYOUT_DIRECTION
+    //                    RIGHT
+    //            START
+    //                    TOP
+    //            VERTICAL_GRAVITY_MASK
+
+
 </menu>
