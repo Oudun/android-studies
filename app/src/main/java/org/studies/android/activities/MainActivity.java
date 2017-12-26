@@ -23,7 +23,9 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
         final ActivitiesListAdapter activitiesListAdapter = new ActivitiesListAdapter(this);
         activitiesListAdapter.addLink("Browse Files", BrowseFilesActivity.class);
+        activitiesListAdapter.addLink("Search Files", SearchFilesActivity.class);
         activitiesListAdapter.addLink("Layout Samples", LayoutActivity.class);
+
         setListAdapter(activitiesListAdapter);
 
 
