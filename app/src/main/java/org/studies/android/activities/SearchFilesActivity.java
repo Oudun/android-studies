@@ -21,22 +21,24 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFilesActivity extends AppCompatActivity implements Callback {
+public class SearchFilesActivity extends AppCompatActivity {
 
     Searcher searcher;
 
     TextView searchResultText;
 
-    @Override
-    public void searchDone() {
-//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_progress);
-//        progressBar.setVisibility(View.INVISIBLE);
+    void searchDone() {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.search_progress);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void setResult(List<String> result) {
+    void setResult(List<String> result) {
         Log.i(this.getClass().getName(), "!!! Result found " + result);
-        searchResultText.setText(result.toString());
+        String resultString = "";
+        for (String path : result) {
+            resultString = resultString + "\n\r" + path;
+        }
+        searchResultText.setText(resultString);
     }
 
     @Override
@@ -55,11 +57,11 @@ public class SearchFilesActivity extends AppCompatActivity implements Callback {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 String pattern = searchText.getText().toString();
                 Log.i(this.getClass().getName(), "Looking for " + pattern);
                 searcher = new Searcher(pattern, SearchFilesActivity.this);
-                searcher.start();
+                runOnUiThread(searcher);
             }
         });
 
@@ -75,9 +77,9 @@ public class SearchFilesActivity extends AppCompatActivity implements Callback {
         List<String> result;
         File currentDir;
         String pattern;
-        Callback callback;
+        SearchFilesActivity callback;
 
-        public Searcher(String str, Callback aCallback) {
+        public Searcher(String str, SearchFilesActivity aCallback) {
             try {
                 result = new ArrayList<String>();
                 currentDir =  new File(new URI("file:/"));
@@ -120,10 +122,10 @@ public class SearchFilesActivity extends AppCompatActivity implements Callback {
 
 }
 
-interface Callback {
-
-    public void setResult(List<String> result);
-
-    public void searchDone();
-
-}
+//interface Callback {
+//
+//    public void setResult(List<String> result);
+//
+//    public void searchDone();
+//
+//}
