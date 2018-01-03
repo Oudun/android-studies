@@ -25,6 +25,7 @@ public class MainActivity extends ListActivity {
         activitiesListAdapter.addLink("Browse Files", BrowseFilesActivity.class);
         activitiesListAdapter.addLink("Search Files", SearchFilesActivity.class);
         activitiesListAdapter.addLink("Layout Samples", LayoutActivity.class);
+        activitiesListAdapter.addLink("Notepad", NotepadActivity.class);
 
         setListAdapter(activitiesListAdapter);
 

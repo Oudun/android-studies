@@ -48,8 +48,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SearchFilesActivity"
-            android:label="@string/title_activity_search"></activity>
-
+            android:label="@string/title_activity_search" />
+        <activity
+            android:name=".activities.NotepadActivity"
+            android:label="@string/title_activity_notepad"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -138,6 +138,8 @@ public class BrowseFilesActivity extends ListActivity {
             textView.setText(selectedFile.getAbsolutePath());
             if (!selectedFile.canRead()) {
                 textView.setTextColor(Constants.LIGHT_PINK);
+            } else if (selectedFile.canWrite()) {
+                textView.setTextColor(Constants.GREEN);
             } else {
                 textView.setTextColor(Color.BLACK);
             }

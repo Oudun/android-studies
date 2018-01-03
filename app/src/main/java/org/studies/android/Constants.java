@@ -9,5 +9,7 @@ import android.graphics.Color;
 public interface Constants {
 
     public static final int LIGHT_PINK = Color.rgb(255, 64, 129);
+    public static final int GREEN = Color.rgb(0, 129, 0);
+
 
 }

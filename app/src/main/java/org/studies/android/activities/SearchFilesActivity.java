@@ -1,5 +1,6 @@
 package org.studies.android.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -57,6 +59,11 @@ public class SearchFilesActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchResultText.getWindowToken(), 0);
+                searchResultText.clearFocus();
+
                 progressBar.setVisibility(View.VISIBLE);
                 String pattern = searchText.getText().toString();
                 Log.i(this.getClass().getName(), "Looking for " + pattern);
@@ -64,10 +71,6 @@ public class SearchFilesActivity extends AppCompatActivity {
                 runOnUiThread(searcher);
             }
         });
-
-
-
-
     }
 
 
@@ -108,9 +111,11 @@ public class SearchFilesActivity extends AppCompatActivity {
             }
             for (File file : dirToScan.listFiles()) {
                 if (file.getName().contains(pattern)){
-                    Log.d(this.getClass().getName(), "File " + file.getName() + " matches pattern " + pattern);
+                    Log.d(this.getClass().getName(), "+++ File " + file.getName() + " matches pattern " + pattern);
                     result.add(file.getPath());
                     callback.setResult(result);
+                } else {
+                    Log.d(this.getClass().getName(), "--- File " + file.getName() + " does not match pattern " + pattern);
                 }
                 if (file.isDirectory()) {
                     scan(file);

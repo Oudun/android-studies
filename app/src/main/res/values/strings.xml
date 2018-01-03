@@ -97,7 +97,7 @@
     <string name="title_activity_search">Search files</string>
     <string name="pattern">search for</string>
     <string name="start_search">Start Search</string>
-
+    <string name="title_activity_notepad">NotepadActivity</string>
 
 
 </resources>
