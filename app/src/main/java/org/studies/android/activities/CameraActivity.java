@@ -28,7 +28,7 @@ public class CameraActivity extends AppCompatActivity {
             c = Camera.open(); // attempt to get a Camera instance
         }
         catch (Exception e){
-            // Camera is not available (in use or does not exist)
+            Log.e(Camera.class.getName(), "Failed to create a camera", e);
         }
         return c; // returns null if camera is unavailable
     }
@@ -44,20 +44,6 @@ public class CameraActivity extends AppCompatActivity {
 
         Camera camera;
         HttpURLConnection urlConnection;
-
-//   try {
-//            urlConnection.setDoOutput(true);
-//            urlConnection.setChunkedStreamingMode(0);
-//
-//            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-//            writeStream(out);
-//
-//            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-//            readStream(in);
-//        } finally {
-//            urlConnection.disconnect();
-//        }
-
 
         public Shooter() {
             camera = getCameraInstance();
@@ -86,14 +72,14 @@ public class CameraActivity extends AppCompatActivity {
                         new Camera.PictureCallback() {
                             @Override
                             public void onPictureTaken(byte[] data, Camera camera) {
-                                //try {
-//                                    urlConnection.setDoOutput(true);
-//                                    urlConnection.getOutputStream().write(data);
-//                                    urlConnection.getOutputStream().flush();
+                                try {
+                                    urlConnection.setDoOutput(true);
+                                    urlConnection.getOutputStream().write(data);
+                                    urlConnection.getOutputStream().flush();
                                     Log.i(getClass().getName(), String.format("Shot taken. size is %d bytes", data.length));
-//                                } catch (IOException ee) {
-//                                    Log.i(getClass().getName(), "Shot not sent", ee);
-//                                }
+                                } catch (IOException ee) {
+                                    Log.i(getClass().getName(), "Shot not sent", ee);
+                                }
                             }
                         });
                 } catch (InterruptedException e) {
