@@ -48,19 +48,24 @@ public class CameraActivity extends AppCompatActivity {
         public Shooter() {
             camera = getCameraInstance();
             camera.startPreview();
-            try {
-                URL url = new URL("http://192.168.112.133:8080/beholder-master/upload");
-                urlConnection = (HttpURLConnection)url.openConnection();
-            } catch (Exception e) {
-                Log.i(getClass().getName(), "Connection not created", e);
-            }
         }
 
         @Override
         public void run() {
+
+            try {
+                URL url = new URL("http://192.168.137.1:8080/beholder-master/post");
+                urlConnection = (HttpURLConnection)url.openConnection();
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestMethod("POST");
+            } catch (Exception e) {
+                Log.i(getClass().getName(), "Connection not created", e);
+            }
+
             while(true) {
                 try {
                     Thread.currentThread().sleep(10000);
+
                     camera.takePicture(
                         null,
                             new Camera.PictureCallback() {
@@ -73,7 +78,6 @@ public class CameraActivity extends AppCompatActivity {
                             @Override
                             public void onPictureTaken(byte[] data, Camera camera) {
                                 try {
-                                    urlConnection.setDoOutput(true);
                                     urlConnection.getOutputStream().write(data);
                                     urlConnection.getOutputStream().flush();
                                     Log.i(getClass().getName(), String.format("Shot taken. size is %d bytes", data.length));
@@ -82,6 +86,18 @@ public class CameraActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
+
+//                                try {
+//                                    urlConnection.getOutputStream().write("Hi there".getBytes());
+//                                    urlConnection.getOutputStream().flush();
+//                                    Log.i(getClass().getName(), String.format("Shot taken. size is %d bytes", "Hi there".getBytes().length));
+//                                } catch (IOException ee) {
+//                                    Log.i(getClass().getName(), "Shot not sent", ee);
+//                                }
+
+
+
                 } catch (InterruptedException e) {
                     Log.e(getClass().getName(), "Pause failed", e);
                 }
