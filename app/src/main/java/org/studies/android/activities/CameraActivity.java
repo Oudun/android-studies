@@ -43,67 +43,58 @@ public class CameraActivity extends AppCompatActivity {
     class Shooter extends Thread {
 
         Camera camera;
+
         HttpURLConnection urlConnection;
 
         public Shooter() {
-            camera = getCameraInstance();
-            camera.startPreview();
+//            camera = getCameraInstance();
+//            camera.startPreview();
         }
 
         @Override
         public void run() {
+            doGet();
+        }
 
+        public void doGet() {
+            try {
+                URL url = new URL("http://192.168.137.1:8080/beholder-master/list");
+                urlConnection = (HttpURLConnection)url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                byte[] data = new byte[100];
+                while(true) {
+                    Thread.currentThread().sleep(10000);
+                    int bytesRead = urlConnection.getInputStream().read(data);
+                    Log.i(getClass().getName(), String.format("Post result is %s bytes received %d", new String(data), bytesRead));
+                }
+            } catch (Exception e) {
+                Log.i(getClass().getName(), "Connection not created", e);
+            }
+        }
+
+        public void doPost() {
             try {
                 URL url = new URL("http://192.168.137.1:8080/beholder-master/post");
                 urlConnection = (HttpURLConnection)url.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setRequestMethod("POST");
+                byte[] data = new byte[100];
+                while(true) {
+                    Thread.currentThread().sleep(10000);
+                    urlConnection.getOutputStream().write("Hi there".getBytes());
+                    urlConnection.getOutputStream().flush();
+                    int bytesRead = urlConnection.getInputStream().read(data);
+                    Log.i(getClass().getName(), String.format("Post result is %s bytes received %d", new String(data), bytesRead));
+                }
             } catch (Exception e) {
                 Log.i(getClass().getName(), "Connection not created", e);
             }
-
-            while(true) {
-                try {
-                    Thread.currentThread().sleep(10000);
-
-                    camera.takePicture(
-                        null,
-                            new Camera.PictureCallback() {
-                                @Override
-                                public void onPictureTaken(byte[] data, Camera camera) {
-                                    Log.i(getClass().getName(), "Raw taken");
-                                }
-                            },null,
-                        new Camera.PictureCallback() {
-                            @Override
-                            public void onPictureTaken(byte[] data, Camera camera) {
-                                try {
-                                    urlConnection.getOutputStream().write(data);
-                                    urlConnection.getOutputStream().flush();
-                                    Log.i(getClass().getName(), String.format("Shot taken. size is %d bytes", data.length));
-                                } catch (IOException ee) {
-                                    Log.i(getClass().getName(), "Shot not sent", ee);
-                                }
-                            }
-                        });
-
-
-//                                try {
-//                                    urlConnection.getOutputStream().write("Hi there".getBytes());
-//                                    urlConnection.getOutputStream().flush();
-//                                    Log.i(getClass().getName(), String.format("Shot taken. size is %d bytes", "Hi there".getBytes().length));
-//                                } catch (IOException ee) {
-//                                    Log.i(getClass().getName(), "Shot not sent", ee);
-//                                }
-
-
-
-                } catch (InterruptedException e) {
-                    Log.e(getClass().getName(), "Pause failed", e);
-                }
-            }
         }
+
     }
+
+
+
 
 
 }
