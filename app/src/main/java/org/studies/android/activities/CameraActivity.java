@@ -7,17 +7,27 @@ import android.util.Log;
 
 import org.studies.android.R;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Policy;
 
 public class CameraActivity extends AppCompatActivity {
+
+    Shooter shooter;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        Shooter shooter = new Shooter();
+        shooter = new Shooter();
         shooter.start();
     }
 
@@ -34,67 +44,109 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     class ShotGrabber implements Camera.PictureCallback {
+
+        byte[] data;
+
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+            this.data = data;
+        }
 
+        public byte[] getData() {
+            return data;
+        }
+    }
+
+    class ShooterError implements Camera.ErrorCallback {
+        @Override
+        public void onError(int error, Camera camera) {
+            Log.i(getClass().getName(), String.format("Camera error %d", error));
         }
     }
 
     class Shooter extends Thread {
 
+        int delay = 5000;
+
         Camera camera;
 
         HttpURLConnection urlConnection;
 
+        ShotGrabber callback;
+
+        ShooterError shooterError;
+
         public Shooter() {
-//            camera = getCameraInstance();
-//            camera.startPreview();
+            callback = new ShotGrabber();
+            camera = getCameraInstance();
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setPictureSize(1280, 960);
+            camera.setParameters(parameters);
+            camera.setErrorCallback(shooterError);
         }
 
         @Override
         public void run() {
-            doGet();
+            while(true) {
+                camera.startPreview();
+                camera.takePicture(null, null, callback);
+                if (callback.getData() != null) {
+                    doPost(callback.getData());
+                }
+                camera.stopPreview();
+                try {
+                    Thread.sleep(delay);
+                } catch (Exception e) {
+                    Log.e(getClass().getName(), "Thread interrupted");
+                }
+            }
         }
 
-        public void doGet() {
+        public void doPost(byte[] data) {
             try {
-                URL url = new URL("http://192.168.137.1:8080/beholder-master/list");
+                URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
                 urlConnection = (HttpURLConnection)url.openConnection();
+                urlConnection.setDoOutput(true);
                 urlConnection.setRequestMethod("POST");
-                byte[] data = new byte[100];
-                while(true) {
-                    Thread.currentThread().sleep(10000);
-                    int bytesRead = urlConnection.getInputStream().read(data);
-                    Log.i(getClass().getName(), String.format("Post result is %s bytes received %d", new String(data), bytesRead));
+                ByteArrayInputStream is = new ByteArrayInputStream(data);
+                byte[] buffer = new byte[100];
+                while(is.read(buffer) > -1) {
+                    urlConnection.getOutputStream().write(buffer);
+                    urlConnection.getOutputStream().flush();
                 }
+                byte[] responseData = new byte[128];
+               DataInputStream dis = new DataInputStream(urlConnection.getInputStream());
+               Byte responseByte = dis.readByte();
+               Log.i(getClass().getName(), String.format("Post result is %s", Integer.toBinaryString(responseByte)));
+               setDelay(responseByte);
             } catch (Exception e) {
                 Log.i(getClass().getName(), "Connection not created", e);
             }
         }
 
-        public void doPost() {
-            try {
-                URL url = new URL("http://192.168.137.1:8080/beholder-master/post");
-                urlConnection = (HttpURLConnection)url.openConnection();
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestMethod("POST");
-                byte[] data = new byte[100];
-                while(true) {
-                    Thread.currentThread().sleep(10000);
-                    urlConnection.getOutputStream().write("Hi there".getBytes());
-                    urlConnection.getOutputStream().flush();
-                    int bytesRead = urlConnection.getInputStream().read(data);
-                    Log.i(getClass().getName(), String.format("Post result is %s bytes received %d", new String(data), bytesRead));
-                }
-            } catch (Exception e) {
-                Log.i(getClass().getName(), "Connection not created", e);
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
+            camera.stopPreview();
+            camera.release();
+        }
+
+        public void setDelay(Byte delayByte) {
+
+            int delayState = delayByte & 56;
+
+            switch (delayState) {
+                case 0: { delay = 0 ; break; }
+                case 8: { delay = 1000 ; break; }
+                case 16: { delay = 5000 ; break; }
+                case 24: { delay = 10000 ; break; }
+                case 32: { delay = 30000 ; break; }
+                case 48: { delay = 60000 ; break; }
+                case 56: { delay = 150000 ; break; }
+                default: { delay = 5000;}
             }
         }
 
     }
-
-
-
-
 
 }
