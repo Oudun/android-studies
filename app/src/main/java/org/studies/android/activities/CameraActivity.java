@@ -88,22 +88,27 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void run() {
             while(true) {
-                camera.startPreview();
-                camera.takePicture(null, null, callback);
-                if (callback.getData() != null) {
-                    doPost(callback.getData());
-                }
-                camera.stopPreview();
                 try {
-                    Thread.sleep(delay);
+                    camera.startPreview();
+                    camera.takePicture(null, null, callback);
+                    if (callback.getData() != null) {
+                        doPost(callback.getData());
+                    }
+                    camera.stopPreview();
+                    try {
+                        Thread.sleep(delay);
+                    } catch (Exception e) {
+                        Log.e(getClass().getName(), "Thread interrupted");
+                    }
                 } catch (Exception e) {
-                    Log.e(getClass().getName(), "Thread interrupted");
+                    Log.e(getClass().getName(), String.format("Runtime exception %s", e.getMessage()));
                 }
             }
         }
 
         public void doPost(byte[] data) {
             try {
+                //URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
                 URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
                 urlConnection = (HttpURLConnection)url.openConnection();
                 urlConnection.setDoOutput(true);
