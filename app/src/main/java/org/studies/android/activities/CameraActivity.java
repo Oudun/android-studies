@@ -1,6 +1,7 @@
 package org.studies.android.activities;
 
 import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.Policy;
+
+import static java.security.AccessController.getContext;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class CameraActivity extends AppCompatActivity {
 
     /** A safe way to get an instance of the Camera object. */
     public static Camera getCameraInstance(){
+        Log.i(CameraActivity.class.getName(), "Getting Camera");
         Camera c = null;
         try {
             c = Camera.open(); // attempt to get a Camera instance
@@ -41,17 +45,23 @@ public class CameraActivity extends AppCompatActivity {
             Log.e(Camera.class.getName(), "Failed to create a camera", e);
         }
         return c; // returns null if camera is unavailable
+
+//        android.hardware.camera2.CameraManager cameraManager = new CameraManager(getContext());
+
     }
 
     class ShotGrabber implements Camera.PictureCallback {
-
         byte[] data;
-
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            this.data = data;
+            if (data != null) {
+                Log.d(getClass().getName(), String.format("Getting %d bytes of data from camera",
+                        data.length));
+                this.data = data;
+            } else {
+                Log.d(getClass().getName(), "Data is null");
+            }
         }
-
         public byte[] getData() {
             return data;
         }
@@ -64,25 +74,35 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    class ShooterPreview implements Camera.PreviewCallback {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            if (data != null)
+                Log.i(getClass().getName(), String.format("Camera preview size %d", data.length));
+            else
+                Log.i(getClass().getName(), "No preview data");
+        }
+    }
+
     class Shooter extends Thread {
 
         int delay = 5000;
-
         Camera camera;
-
         HttpURLConnection urlConnection;
-
-        ShotGrabber callback;
-
+        ShotGrabber jpegCallback, rawCallback;
         ShooterError shooterError;
+        ShooterPreview shooterPreview = new ShooterPreview();
 
         public Shooter() {
-            callback = new ShotGrabber();
+            jpegCallback = new ShotGrabber();
+            rawCallback = new ShotGrabber();
             camera = getCameraInstance();
+            shooterError = new ShooterError();
             Camera.Parameters parameters = camera.getParameters();
             parameters.setPictureSize(1280, 960);
             camera.setParameters(parameters);
             camera.setErrorCallback(shooterError);
+            camera.setPreviewCallback(shooterPreview);
         }
 
         @Override
@@ -90,9 +110,17 @@ public class CameraActivity extends AppCompatActivity {
             while(true) {
                 try {
                     camera.startPreview();
-                    camera.takePicture(null, null, callback);
-                    if (callback.getData() != null) {
-                        doPost(callback.getData());
+                    Log.i(getClass().getName(), "Taking picture");
+                    camera.takePicture(null, rawCallback, jpegCallback);
+                    if (jpegCallback.getData() != null) {
+                        doPost(jpegCallback.getData());
+                    } else {
+                        Log.i(getClass().getName(), "JPEG not captured");
+                    }
+                    if (rawCallback.getData() != null) {
+                        doPost(rawCallback.getData());
+                    } else {
+                        Log.i(getClass().getName(), "RAW not captured");
                     }
                     camera.stopPreview();
                     try {
@@ -108,7 +136,8 @@ public class CameraActivity extends AppCompatActivity {
 
         public void doPost(byte[] data) {
             try {
-                //URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
+                //URL url = new URL("http://192.168.137.1:8080/beholder-master/post");
+                Log.i(getClass().getName(), String.format("Posting %d bytes", data.length));
                 URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
                 urlConnection = (HttpURLConnection)url.openConnection();
                 urlConnection.setDoOutput(true);
