@@ -98,6 +98,7 @@
     <string name="pattern">search for</string>
     <string name="start_search">Start Search</string>
     <string name="title_activity_notepad">NotepadActivity</string>
+    <string name="title_activity_camera2">CameraActivity2</string>
 
 
 </resources>

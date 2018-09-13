@@ -27,6 +27,7 @@ public class MainActivity extends ListActivity {
         activitiesListAdapter.addLink("Layout Samples", LayoutActivity.class);
         activitiesListAdapter.addLink("Notepad", NotepadActivity.class);
         activitiesListAdapter.addLink("Camera", CameraActivity.class);
+        activitiesListAdapter.addLink("Camera2", CameraActivity2.class);
 
         setListAdapter(activitiesListAdapter);
 

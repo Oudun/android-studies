@@ -19,11 +19,14 @@ public class LayoutActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         final ActivitiesListAdapter activitiesListAdapter = new ActivitiesListAdapter(this);
         activitiesListAdapter.addLink("Linear Layout", LinearLayoutActivity.class);
         activitiesListAdapter.addLink("Relative Layout", RelativeLayoutActivity.class);
         activitiesListAdapter.addLink("Grid Layout", GridLayoutActivity.class);
+        activitiesListAdapter.addLink("Canvas Layout", CanvasActivity.class);
+        activitiesListAdapter.addLink("Page Layout", PageActivity.class);
+
+
 
 
 
