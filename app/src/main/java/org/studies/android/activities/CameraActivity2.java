@@ -65,7 +65,6 @@ public class CameraActivity2 extends AppCompatActivity {
         });
     }
 
-
     CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
@@ -86,7 +85,7 @@ public class CameraActivity2 extends AppCompatActivity {
             Image image = null;
             try {
                 image = imageReader.acquireNextImage();
-                byte[] buffer = new byte[100];
+                byte[] buffer = new byte[image.getPlanes()[0].getBuffer().remaining()];
                 image.getPlanes()[0].getBuffer().get(buffer);
                 Log.d("CAMERA_2", "Buffer content is " + new String(buffer));
             } catch (Exception e) {
@@ -153,7 +152,6 @@ public class CameraActivity2 extends AppCompatActivity {
             camera = cameraDevice;
             Log.d("CAMERA_2", "Camera is opened");
             imageReader = ImageReader.newInstance(1920, 1088, JPEG, 1);
-            imageReader.setOnImageAvailableListener(imageListener, null);
             List<Surface> outputs = new ArrayList<Surface>();
             outputs.add(imageReader.getSurface());
             try {
@@ -175,13 +173,6 @@ public class CameraActivity2 extends AppCompatActivity {
         }
     };
 
-    ImageReader.OnImageAvailableListener imageListener = new ImageReader.OnImageAvailableListener() {
-        @Override
-        public void onImageAvailable(ImageReader reader) {
-            Log.d("CAMERA_2", "Image is available");
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -189,6 +180,7 @@ public class CameraActivity2 extends AppCompatActivity {
             camera.close();
         Log.i(null, "Camera is closed");
     }
+
 }
 
 
