@@ -11,6 +11,7 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,10 @@ import android.view.View;
 
 import org.studies.android.R;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +41,8 @@ public class CameraActivity2 extends AppCompatActivity {
     CaptureRequest.Builder captureRequestBuilder;
     CameraDevice camera;
     ImageReader imageReader;
+
+    HttpURLConnection urlConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,7 @@ public class CameraActivity2 extends AppCompatActivity {
                 byte[] buffer = new byte[image.getPlanes()[0].getBuffer().remaining()];
                 image.getPlanes()[0].getBuffer().get(buffer);
                 Log.d("CAMERA_2", "Buffer content is " + new String(buffer));
+                new PostTask(buffer).execute();
             } catch (Exception e) {
                 Log.e("CAMERA_2", e.getLocalizedMessage());
             } finally {
@@ -179,6 +187,50 @@ public class CameraActivity2 extends AppCompatActivity {
         if (camera != null)
             camera.close();
         Log.i(null, "Camera is closed");
+    }
+
+    public void doPost(byte[] data) {
+        try {
+            Log.i("CAMERA_2", String.format("Posting %d bytes", data.length));
+            //URL url = new URL("http://192.168.137.1:8080/beholder-master/post");
+            //URL url = new URL("http://192.168.0.194:8080/beholder-master/post");
+            URL url = new URL("http://django-psql-persistent-toolbox.7e14.starter-us-west-2.openshiftapps.com");
+            //URL url = new URL("http://ya.ru/");
+
+            urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.getContent();
+//            ByteArrayInputStream is = new ByteArrayInputStream(data);
+//            byte[] buffer = new byte[100];
+//            while(is.read(buffer) > -1) {
+//                urlConnection.getOutputStream().write(buffer);
+//                urlConnection.getOutputStream().flush();
+//            }
+//            byte[] responseData = new byte[128];
+//            DataInputStream dis = new DataInputStream(urlConnection.getInputStream());
+//            Byte responseByte = dis.readByte();
+//            Log.i("CAMERA_2", String.format("Post result is %s", Integer.toBinaryString(responseByte)));
+            //setDelay(responseByte);
+        } catch (Exception e) {
+            Log.i("CAMERA_2", "Connection not created", e);
+        }
+    }
+
+    class PostTask extends AsyncTask {
+
+        byte[] data;
+
+        public PostTask(byte[] data) {
+            this.data = data;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            doPost(data);
+            return null;
+        }
+
     }
 
 }
